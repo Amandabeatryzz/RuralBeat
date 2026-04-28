@@ -1,0 +1,54 @@
+5 cruds /src/frontend/src/assets/crabitbuilder.png
+CRUD de Usuários (Estudantes/Professores)
+
+Create: Cadastro de novos alunos.
+
+Read: Visualização do perfil e do Dashboard (Início).
+
+Update: Alteração de dados (como você previu no seu fluxo: "Deseja editar?").
+
+Delete: Remoção ou desativação da conta.
+
+2. CRUD de Cadeiras (Disciplinas)
+Gerencia o catálogo de programação da UFRPE.
+
+Create: Admin adiciona cadeiras (IP, P1, Estrutura de Dados).
+
+Read: Aluno visualiza o catálogo e os detalhes da disciplina.
+
+Update: Atualização de ementas ou nomes de professores.
+
+Delete: Remoção de cadeiras antigas ou duplicadas.
+
+3. CRUD de Materiais de Estudo
+Onde vive o conteúdo prático.
+
+Create: Upload de links do GitHub, PDFs ou videoaulas.
+
+Read: Aluno acessa os materiais dentro de uma cadeira específica.
+
+Update: Troca de um link quebrado por um novo.
+
+Delete: Exclusão de materiais obsoletos.
+
+4. CRUD de Equipes (Hackathon)
+Este é o coração do módulo de eventos.
+
+Create: O líder cria a equipe e define o nome.
+
+Read: Busca por equipes que precisam de membros ou visualização do seu próprio time.
+
+Update: Adição ou remoção de membros e alteração do nome da equipe.
+
+Delete: Desfazer a equipe (caso desistam antes da submissão).
+
+5. CRUD de Submissões e Projetos
+A entrega final que alimenta o Ranking.
+
+Create: Envio do link do projeto e do pitch.
+
+Read: Juízes acessam os projetos para avaliar; alunos veem o status da entrega.
+
+Update: Correção do link enviado (dentro do prazo do cronômetro).
+
+Delete: Cancelamento da submissão para substituição total.

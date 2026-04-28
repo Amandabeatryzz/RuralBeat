@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RuralBeat - Hackathon</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            color: rgb(0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* container */
+        .container {
+            text-align: center;
+            max-width: 700px;
+            padding: 30px;
+        }
+
+    
+        .mascote {
+            width: 360px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+       
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+       
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+      
+        h1 {
+            margin: 10px 0;
+            font-size: 32px;
+        }
+
+        .highlight {
+            color: #f59e0b;
+        }
+
+
+    
+        .progress {
+            background: #1e293b;
+            border-radius: 20px;
+            height: 12px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 60%;
+            background: linear-gradient(90deg, #facc15, #f59e0b);
+            animation: loading 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes loading {
+            from {
+                width: 40%;
+            }
+
+            to {
+                width: 75%;
+            }
+        }
+
+
+
+        .footer {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+  
+        <img src="/src/frontend/src/assets/crabitbuilder.png" class="mascote">
+
+        <div class="card">
+
+            <h1> Hackathon <span class="highlight">Em Breve</span></h1>
+
+
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+
+
+
+        </div>
+
+
+
+        <div class="footer">
+            Próxima atualização em breve
+        </div><br>
+        <a href="index.html"
+            style="margin-top: 20px; padding: 10px 20px; text-decoration: none; background: #facc15; color: white; cursor: pointer; border: none; border-radius: 8px">Voltar
+            ao Inicio</a>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RuralBeat</title>
+
+<link href="/src/frontend/src/assets/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+<header class="navbar" role="banner">
+
+    <div class="logo">RuralBeat</div>
+
+    <nav class="nav-links" aria-label="Menu principal">
+        <a href="#">Início</a>
+        <a href="#">Cadeiras</a>
+        <a href="trilha.html">Trilha</a>
+        <a href="hackathon.html">Hackathons</a>
+        <a href="#">Ranking</a>
+    </nav>
+
+    <div class="user" aria-label="Usuário logado">
+        <span>Olá, Arthur</span>
+    </div>
+
+</header>
+
+<main>
+
+  
+    <section class="hero" aria-labelledby="titulo-principal">
+
+        <div class="hero-text">
+            <h1 id="titulo-principal">
+                Domine sua jornada com o <span>RuralBeat</span>
+            </h1>
+
+            <p>
+                Organize suas cadeiras, evolua na trilha e participe de hackathons reais.
+            </p>
+
+            <button class="btn btn-primary">Começar</button>
+            <button class="btn btn-outline">Ver trilha</button>
+        </div>
+
+        <img 
+           src="/src/frontend/src/assets/crabit.png" 
+            alt="Mascote Crabit do RuralBeat"
+            class="crabit"
+        >
+
+    </section>
+
+  
+    <section class="section" aria-labelledby="titulo-cadeiras">
+
+        <h2 id="titulo-cadeiras">Suas Cadeiras</h2>
+
+      
+        <div class="loading" aria-live="polite">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+
+    </section>
+
+
+    <section class="section" aria-labelledby="titulo-empty">
+
+        <div class="empty">
+            <img 
+                src="/src/frontend/src/assets/crabit.png" 
+                alt="Ilustração de estado vazio"
+            >
+
+            <h2 id="titulo-empty">Nenhuma cadeira ainda</h2>
+
+            <p>Comece criando sua primeira disciplina</p>
+
+            <button class="btn btn-primary">Criar cadeira</button>
+        </div>
+
+    </section>
+
+
+    <section class="section" aria-labelledby="titulo-hackathons">
+
+        <h2 id="titulo-hackathons">Hackathons Ativos</h2>
+
+        <div class="grid">
+
+            <article class="card" aria-labelledby="hackathon-1">
+
+                <h3 id="hackathon-1">RuralTech</h3>
+
+                <p>Tema: inovação no campo</p>
+
+                <button class="btn btn-primary">
+                    Participar
+                </button>
+
+            </article>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+</body>
+</html>
