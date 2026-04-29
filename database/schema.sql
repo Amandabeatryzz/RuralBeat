@@ -7,26 +7,34 @@ CREATE TABLE disciplinas (
     obrigatoria INTEGER NOT NULL DEFAULT 1
 );
 
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    nome TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    senha TEXT NOT NULL,
+    nivel INTEGER DEFAULT 1
+);
+
 CREATE INDEX idx_disciplinas_periodo ON disciplinas(periodo);
 -- =========================
 -- 1º PERÍODO
 -- =========================
 INSERT INTO disciplinas (codigo, nome, periodo, carga_horaria) VALUES
-('06438', 'Cálculo a Uma Variável', 1, 60),
-('06236', 'Introdução à Programação', 1, 90),
-('06274', 'Laboratório de Informática', 1, 30),
-('06203', 'Matemática Discreta', 1, 60),
-('04166', 'Teoria Geral da Administração', 1, 60);
+('06438', 'Fundamentos Matemáticos para Sistemas de Informação I', 1, 60),
+('06236', 'Introdução à Administração', 1, 90),
+('06274', 'Princípios de Programação', 1, 30),
+('06203', 'Projeto Interdisciplinar de Sistemas de Informação', 1, 60),
+('04166', 'Sustentabilidade em Sistemas de informação', 1, 60);
 
 -- =========================
 -- 2º PERÍODO
 -- =========================
 INSERT INTO disciplinas (codigo, nome, periodo, carga_horaria) VALUES
-('06214', 'Algoritmos e Estruturas de Dados', 2, 60),
-('06439', 'Cálculo a Várias Variáveis', 2, 60),
-('04162', 'Fundamentos de Sistemas de Informação', 2, 60),
-('06239', 'Introdução à Teoria da Computação', 2, 60),
-('06283', 'Laboratório de Programação', 2, 60);
+('06214', 'Fundamentos Matemáticos para Sistemas de Informação II', 2, 60),
+('06439', 'Projeto Interdisciplinar de Sistemas de Informação II', 2, 60),
+('04162', 'Fundamentos de Problemas Computacionais', 2, 60),
+('06239', 'Elementos de Sistemas Computacionais', 2, 60),
+('06283', 'Fundamentos de Sistemas de Informação', 2, 60);
 
 -- =========================
 -- 3º PERÍODO
@@ -35,7 +43,7 @@ INSERT INTO disciplinas (codigo, nome, periodo, carga_horaria) VALUES
 ('06287', 'Fundamentos de Engenharia de Software', 3, 60),
 ('06309', 'Física para Computação', 3, 60),
 ('04106', 'Introdução à Economia', 3, 60),
-('06286', 'Modelagem e Programação Orientada a Objetos', 3, 60),
+('06286', 'Projeto Interdisciplinar de Sistemas de Informação III', 3, 60),
 ('06418', 'Álgebra Vetorial e Linear para Computação', 3, 60);
 
 -- =========================
@@ -43,7 +51,7 @@ INSERT INTO disciplinas (codigo, nome, periodo, carga_horaria) VALUES
 -- =========================
 INSERT INTO disciplinas (codigo, nome, periodo, carga_horaria) VALUES
 ('04163', 'Administração Financeira', 4, 60),
-('06243', 'Estatística Exploratória I', 4, 60),
+('06243', 'Projeto Interdisciplinar de Sistemas de Informação IV', 4, 60),
 ('06288', 'Fundamentos de Banco de Dados', 4, 60),
 ('06289', 'Processo de Desenvolvimento de Software', 4, 60),
 ('05345', 'Psicologia Aplicada às Organizações', 4, 60);

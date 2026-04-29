@@ -31,8 +31,8 @@ class DisciplinaRepository:
     
     @staticmethod
     def get_by_periodo(periodo):
-      conn = get_connection()
-      cursor = conn.cursor()
+      conn = get_connection() # Obtém uma conexão com o banco de dados usando a função get_connection definida no módulo de conexão
+      cursor = conn.cursor() # Cria um cursor para executar comandos SQL no banco de dados
 
       cursor.execute(
         "SELECT * FROM disciplinas WHERE periodo = ?",
