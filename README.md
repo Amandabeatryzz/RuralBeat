@@ -1,22 +1,49 @@
-RuralBeat
-📌 Sobre o Projeto
+# 🌱 RuralBeat
 
-O RuralBeat é um sistema acadêmico desenvolvido em Python
-O sistema permite o gerenciamento de disciplinas e usuários, aplicando conceitos reais de backend como arquitetura em camadas, validação de dados e persistência.
+<p align="center">
+  Sistema de gestão acadêmica com CLI + API REST (FastAPI)
+</p>
 
-🎯 Problema
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.x-blue">
+  <img src="https://img.shields.io/badge/FastAPI-API-green">
+  <img src="https://img.shields.io/badge/SQLite-Database-lightgrey">
+  <img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow">
+</p>
 
-A organização acadêmica manual dificulta o controle de disciplinas, períodos e progresso do aluno.
+---
 
-💡 Solução
+## 📌 Sobre o Projeto
 
-O sistema oferece:
+O **RuralBeat** é um sistema acadêmico desenvolvido em Python que permite gerenciar disciplinas e usuários através de:
 
-Gerenciamento de disciplinas
-Organização por período
-Cadastro e login de usuários
-API para integração com aplicações web ou mobile
-🧱 Arquitetura
+* 🖥️ Interface CLI (terminal)
+* 🌐 API REST com FastAPI
+
+O projeto aplica conceitos reais de desenvolvimento backend, incluindo arquitetura em camadas, validação de dados e organização modular.
+
+---
+
+## 🎯 Problema
+
+A dificuldade em organizar disciplinas e acompanhar a estrutura acadêmica de forma simples e centralizada.
+
+---
+
+## 💡 Solução
+
+Um sistema que permite:
+
+* Cadastro e autenticação de usuários
+* Gerenciamento de disciplinas
+* Organização por período
+* Integração via API para futuras aplicações web
+
+---
+
+## 🧱 Arquitetura
+
+```bash id="5z9y2r"
 CLI / API (FastAPI)
         ↓
    Controller (Router)
@@ -26,149 +53,212 @@ CLI / API (FastAPI)
    Repository
         ↓
      Database (SQLite)
-🔍 Camadas
-CLI / API → Interface com usuário
-Controller (Router) → Define endpoints da API
-Service → Regras de negócio
-Repository → Comunicação com banco
-Database → Persistência dos dados
+```
 
 ✔ Separação de responsabilidades
-✔ Reuso de código entre CLI e API
-✔ Facilidade de escalabilidade
+✔ Reutilização de código
+✔ Estrutura escalável
 
-⚙️ Tecnologias
-Python 3.x
-SQLite (sqlite3)
-FastAPI
-Uvicorn
-Pydantic
-Regex (validação CLI)
-Git e GitHub
-🚀 Funcionalidades
-👤 Usuários
-Cadastro
-Login
-Validação de email
-Validação de senha
-Bloqueio de email duplicado
-📚 Disciplinas
-Criar disciplina
-Listar disciplinas
-Filtrar por período
-🌐 API REST (FastAPI)
-📌 Estrutura
-router.py → define endpoints
-schemas.py → validação com Pydantic
-service.py → regras de negócio
-🔗 Endpoints
-📥 Listar disciplinas
+---
+
+## 🚀 Releases (Evolução do Projeto)
+
+### 🔹 Versão 1.0 (VA1)
+
+* Estrutura inicial do projeto
+* Configuração do banco SQLite
+* CRUD básico de disciplinas (CLI)
+* Arquitetura em camadas implementada
+
+---
+
+### 🔹 Versão 2.0 (VA2)
+
+* Sistema de autenticação (login/cadastro)
+* Validação de email (regex)
+* Validação de senha
+* Bloqueio de email duplicado
+* Filtro de disciplinas por período
+
+---
+
+### 🔹 Versão 3.0 (VA3)
+
+* Implementação da API REST com FastAPI
+* Criação de endpoints (GET / POST)
+* Uso de Pydantic para validação
+* Documentação automática (Swagger)
+* Integração CLI + API
+
+---
+
+## 🔄 Fluxogramas e Planejamento
+
+📁 Acesse os fluxogramas e a planilha do projeto:
+
+ https://drive.google.com/drive/folders/12n1BCKfDIjs-ZURshak3fSPBVY3y9v70?usp=sharing
+
+Conteúdo:
+
+* Fluxogramas das funcionalidades
+* PDF da planilha de acompanhamento
+* Organização das releases
+
+---
+
+## ⚙️ Tecnologias Utilizadas
+
+* Python 3.x
+* SQLite
+* FastAPI
+* Uvicorn
+* Pydantic
+* Regex
+* Git e GitHub
+
+---
+
+## 🌐 API REST
+
+### 📌 Endpoints
+
+#### 📥 Listar disciplinas
+
+```http id="9h9x9p"
 GET /disciplinas/
-➕ Criar disciplina
+```
+
+#### ➕ Criar disciplina
+
+```http id="ik4mqh"
 POST /disciplinas/
+```
 
-Exemplo JSON:
+Exemplo:
 
+```json id="5d0e3k"
 {
   "codigo": "12345",
   "nome": "Nova Disciplina",
   "periodo": 1,
   "carga_horaria": 60
 }
-📦 Instalação
-1. Clonar o repositório
+```
+
+---
+
+## 📦 Instalação
+
+```bash id="s9r6b8"
 git clone https://github.com/ArtRaWs/RuralBeat.git
 cd RuralBeat
-2. Criar ambiente virtual
+```
+
+---
+
+## 🧪 Ambiente
+
+```bash id="0skzqg"
 python -m venv venv
-3. Ativar ambiente
+```
 
-Windows:
+Ativar:
 
+**Windows**
+
+```bash id="g2v1fb"
 venv\Scripts\activate
+```
 
-Linux/Mac:
+---
 
-source venv/bin/activate
-4. Instalar dependências
+## 📥 Dependências
+
+```bash id="y7m7dy"
 pip install fastapi uvicorn pydantic
-▶️ Execução
-🗄️ Inicializar banco de dados
+```
+
+---
+
+## ▶️ Execução
+
+### Banco de dados
+
+```bash id="p1r4bi"
 python -m src.backend.database.init_db
-🖥️ Rodar CLI
+```
+
+---
+
+### CLI
+
+```bash id="hb7sd2"
 python -m src.backend.modules.disciplinas.main_cli
-🌐 Rodar API
+```
 
-Crie um arquivo main.py:
+---
 
+### API
+
+Crie `main.py`:
+
+```python id="s5q3du"
 from fastapi import FastAPI
-from src.backend.modules.disciplinas.controller import router as disciplinas_router
+from src.backend.modules.disciplinas.controller import router
 
 app = FastAPI(title="RuralBeat API")
 
-app.include_router(disciplinas_router)
+app.include_router(router)
+```
 
 Execute:
 
+```bash id="n94t3w"
 uvicorn src.backend.main:app --reload
-📊 Documentação automática
+```
 
-Após rodar a API:
+---
 
-Swagger:
-http://127.0.0.1:8000/docs
-Redoc:
-http://127.0.0.1:8000/redoc
-🧠 Fluxo do Sistema
-Usuário acessa CLI ou API
-Dados são validados (regex ou Pydantic)
-Service processa regras
-Repository acessa banco
-Retorno ao usuário
-📁 Estrutura do Projeto
-src/backend/
-├── config.py
-├── database/
-│   ├── connection.py
-│   ├── init_db.py
-│   ├── schema.sql
-│   └── migrations.sql
-└── modules/
-    ├── disciplinas/
-    │   ├── main_cli.py
-    │   ├── router.py
-    │   ├── service.py
-    │   ├── repository.py
-    │   └── schemas.py
-    └── usuario/
-        ├── user_service.py
-        └── user_repository.py
+## 📊 Documentação
 
-    Há o front-end também
-⚠️ Desafios
-Integração entre CLI e API
-Organização em arquitetura modular
-Validação de dados
-Sincronização do banco SQLite
-Problemas de importação no Python
-🔐 Segurança
-Validação de email com regex
-Validação de senha
-Prevenção de duplicidade
-Uso de parâmetros SQL (evita SQL Injection)
-📈 Melhorias Futuras
-Autenticação JWT
-Criptografia de senha (bcrypt)
-Interface web
-Sistema de progresso do aluno
-Hackathon
+* Swagger: http://127.0.0.1:8000/docs
+* Redoc: http://127.0.0.1:8000/redoc
 
+---
 
-👨‍💻 Autores
+## 🔐 Segurança
+
+* Validação de email
+* Validação de senha
+* Prevenção de duplicidade
+* Queries seguras (anti SQL Injection)
+
+---
+
+## ⚠️ Desafios
+
+* Organização em camadas
+* Integração CLI + API
+* Gerenciamento de banco
+* Problemas de importação Python
+
+---
+
+## 📈 Melhorias Futuras
+
+* Autenticação JWT
+* Criptografia de senha
+* Interface web
+* Deploy
+
+---
+
+## 👨‍💻 Autor
 
 Arthur Ricardo da Silva
-Amanda Beatryz
 
-📄 Licença
+---
+
+## 📄 Licença
 
 MIT License
