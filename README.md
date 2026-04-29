@@ -253,9 +253,10 @@ uvicorn src.backend.main:app --reload
 
 ---
 
-## 👨‍💻 Autor
+## 👨‍💻 Autores
 
 Arthur Ricardo da Silva
+Amanda 
 
 ---
 
