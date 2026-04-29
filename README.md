@@ -1,4 +1,4 @@
-# 🌱 RuralBeat
+#  RuralBeat
 
 <p align="center">
   Sistema de gestão acadêmica com CLI + API REST (FastAPI)
