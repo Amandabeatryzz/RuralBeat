@@ -115,4 +115,4 @@ INSERT INTO optativas (codigo, nome, carga_horaria) VALUES
 ('14011', 'Tópicos Avançados em Redes de Computadores I', 60);
 ('14703', 'Tendências Tecnológicas em TIC', 60);
 ('14328', 'Inovação em TIC', 60);
-('14024', 'Tópicos Avançados em Inteligência Artificial', 60);
+('14024', 'Tópicos Avançados em Inteligência Artificial', 60);.
