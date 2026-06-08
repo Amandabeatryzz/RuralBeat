@@ -43,9 +43,7 @@ def carregar_prerequisitos():
     return grafo
 
 
-# =============================
-# LÓGICA DE LIBERAÇÃO
-# =============================
+
 def disciplinas_liberadas(disciplinas, grafo, concluidas):
     liberadas = []
 
@@ -59,9 +57,6 @@ def disciplinas_liberadas(disciplinas, grafo, concluidas):
     return liberadas
 
 
-# =============================
-# VISUALIZAÇÃO TERMINAL
-# =============================
 def mostrar_trilha(disciplinas, grafo, concluidas):
     print("\n=== TRILHA BSI (RuralBeat) ===\n")
 
@@ -92,10 +87,6 @@ def mostrar_trilha(disciplinas, grafo, concluidas):
 
     print("\n")
 
-
-# =============================
-# MAIN
-# =============================
 def main():
     disciplinas = carregar_disciplinas()
     grafo = carregar_prerequisitos()

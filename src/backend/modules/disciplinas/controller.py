@@ -1,13 +1,42 @@
-from fastapi import APIRouter # Importa o APIRouter do FastAPI para criar rotas específicas para o módulo de disciplinas
-from .service import DisciplinaService # Importa o serviço de disciplinas para lidar com a lógica de negócios
-from .schemas import DisciplinaCreate # Importa o esquema de criação de disciplina para validar os dados de entrada
+from typing import Optional
+from fastapi import APIRouter, Depends, Query
 
-router = APIRouter(prefix="/disciplinas", tags=["Disciplinas"]) # Cria um roteador com o prefixo "/disciplinas" e a tag "Disciplinas" para organizar as rotas relacionadas a disciplinas
+from database.connection import get_db
+from security import get_current_user
+from modules.disciplinas import service
+from modules.disciplinas.schemas import DisciplinaOut, ProgressoCreate, ProgressoOut
 
-@router.get("/") # Define uma rota GET para listar todas as disciplinas
-def listar(): # Chama o serviço para listar as disciplinas e retorna o resultado
-    return DisciplinaService.listar_disciplinas() # Retorna a lista de disciplinas obtida do serviço
+router = APIRouter(prefix="/api/disciplinas", tags=["Disciplinas"])
 
-@router.post("/") # Define uma rota POST para criar uma nova disciplina
-def criar(data: DisciplinaCreate): # Recebe os dados de criação de disciplina, valida usando o esquema DisciplinaCreate e chama o serviço para criar a disciplina
-    return DisciplinaService.criar_disciplina(data.dict()) #    Retorna o resultado da criação da disciplina, convertendo os dados de entrada para um dicionário antes de passar para o serviço
+
+@router.get("/", response_model=list[DisciplinaOut])
+def list_disciplinas(
+    periodo: Optional[int] = Query(None),
+    obrigatoria: Optional[int] = Query(None),
+):
+    with get_db() as db:
+        return service.list_disciplinas(db, periodo, obrigatoria)
+
+
+@router.get("/{disciplina_id}", response_model=DisciplinaOut)
+def get_disciplina(disciplina_id: int):
+    with get_db() as db:
+        return service.get_disciplina(db, disciplina_id)
+
+
+@router.get("/progresso/me", response_model=list[ProgressoOut])
+def get_my_progresso(current_user: dict = Depends(get_current_user)):
+    with get_db() as db:
+        return service.get_progresso(db, current_user["id"])
+
+
+@router.post("/progresso", response_model=ProgressoOut, status_code=201)
+def set_progresso(body: ProgressoCreate, current_user: dict = Depends(get_current_user)):
+    with get_db() as db:
+        return service.set_progresso(db, current_user["id"], body.disciplina_id, body.status)
+
+
+@router.delete("/progresso/{disciplina_id}", status_code=204)
+def remove_progresso(disciplina_id: int, current_user: dict = Depends(get_current_user)):
+    with get_db() as db:
+        service.remove_progresso(db, current_user["id"], disciplina_id)

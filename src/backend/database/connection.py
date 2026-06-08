@@ -1,7 +1,25 @@
 import sqlite3
-from src.backend.config import DATABASE_PATH # Importa o caminho do banco de dados a partir do arquivo de configuração
+import os
+from contextlib import contextmanager
 
-def get_connection(): # Função para obter uma conexão com o banco de dados
-    conn = sqlite3.connect(DATABASE_PATH) # Conecta ao banco de dados usando o caminho definido em DATABASE_PATH
-    conn.row_factory = sqlite3.Row # Configura a conexão para retornar os resultados como dicionários, facilitando o acesso aos dados por nome de coluna
-    return conn # Retorna a conexão estabelecida com o banco de dados para ser utilizada em outras partes do código, como nos serviços e controladores dos módulos.
+# Caminho absoluto para o banco, independente de onde o uvicorn é chamado
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database", "ruralbeat.db")
+
+def get_connection() -> sqlite3.Connection:
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+@contextmanager
+def get_db():
+    conn = get_connection()
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()

@@ -1,7 +1,14 @@
-import os
+from pydantic_settings import BaseSettings
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DATABASE_PATH = os.path.join(BASE_DIR, "database", "ruralbeat.db")
+class Settings(BaseSettings):
+    DATABASE_URL: str = "database/ruralbeat.db"
+    SECRET_KEY: str = "change-me-in-production"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24h
 
-DEBUG = True
+    class Config:
+        env_file = ".env"
+
+
+settings = Settings()
