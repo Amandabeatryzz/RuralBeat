@@ -1,3 +1,5 @@
+# Este script é responsável por inicializar o banco de dados SQLite para a aplicação RuralBeat. Ele cria as tabelas necessárias e define a estrutura do banco de dados com base no arquivo schema.sql. 
+# O script garante que o diretório para o banco de dados exista, conecta-se ao banco de dados, executa o script SQL para criar as tabelas e, em seguida, fecha a conexão. Se o schema já existir, ele ignora a criação e continua normalmente.
 import sqlite3
 import os
 from config import settings

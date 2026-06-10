@@ -5,7 +5,7 @@ from typing import Optional
 def find_by_email(db: sqlite3.Connection, email: str) -> Optional[dict]:
     row = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
     return dict(row) if row else None
-
+# A função find_by_email busca um usuário específico pelo seu email. Se o usuário for encontrado, ele é retornado como um dicionário; caso contrário, a função retorna None.
 
 def find_by_id(db: sqlite3.Connection, user_id: int) -> Optional[dict]:
     row = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()

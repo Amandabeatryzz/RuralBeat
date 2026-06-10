@@ -1,8 +1,8 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query # para lidar com parâmetros de consulta (query parameters) nas rotas
 
 from database.connection import get_db
-from security import get_current_user, get_current_admin
+from security import get_current_user, get_current_admin # para lidar com autenticação e autorização, garantindo que apenas usuários autenticados possam acessar certas rotas e que apenas administradores possam acessar rotas de criação, atualização e exclusão de eventos
 from modules.eventos import service
 from modules.eventos.schemas import EventoCreate, EventoUpdate, EventoOut, InscricaoOut
 

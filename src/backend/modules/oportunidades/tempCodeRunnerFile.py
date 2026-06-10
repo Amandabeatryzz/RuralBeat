@@ -1,1 +1,0 @@
-        service.delete_oportunidade(db, op_id)
