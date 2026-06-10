@@ -6,6 +6,7 @@
 <title>RuralBeat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="canvas/canvas.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
@@ -357,60 +358,90 @@
         </div>
       </section>
 
-      <!-- MATERIAIS -->
-      <section class="page page-fade" id="page-materiais">
-        <div class="section-header">
-          <div>
-            <h1 class="section-title">Materiais</h1>
-            <p class="section-subtitle">Seus recursos de estudo por disciplina</p>
-          </div>
-        </div>
-
-        <!-- Seletor de disciplina + barra de busca -->
-        <div class="mat-toolbar">
-          <div class="mat-toolbar-left">
-            <div class="mat-select-wrap">
-              <svg class="mat-select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              <select class="form-input form-select mat-disc-select" id="mat-disc-select" onchange="loadMateriais()">
+      <!-- MATERIAIS — Infinite Canvas Workspace -->
+      <section class="page page-canvas page-fade" id="page-materiais">
+        <!-- Toolbar -->
+        <div class="canvas-toolbar">
+          <div class="canvas-toolbar-left">
+            <span class="canvas-toolbar-title">Materiais · <span id="canvas-disc-title">Workspace</span></span>
+            <div class="canvas-select-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <select class="canvas-disc-select" id="canvas-disc-select">
                 <option value="">Selecione uma disciplina...</option>
               </select>
             </div>
-            <div class="mat-search-wrap" id="mat-search-wrap" style="display:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input class="mat-search-input" id="mat-search" placeholder="Buscar materiais..." oninput="filterMateriais()"/>
-            </div>
+            <span class="canvas-zoom-badge" id="canvas-zoom-badge">100%</span>
           </div>
-          <div class="mat-toolbar-right" id="mat-add-btn-wrap" style="display:none">
-            <div class="mat-type-tabs" id="mat-type-tabs">
-              <button class="mat-type-tab active" data-type="all" onclick="filterMatType('all',this)">Todos</button>
-              <button class="mat-type-tab" data-type="LINK" onclick="filterMatType('LINK',this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                Links
-              </button>
-              <button class="mat-type-tab" data-type="LIVRO" onclick="filterMatType('LIVRO',this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                Livros
-              </button>
-              <button class="mat-type-tab" data-type="ANOTACAO" onclick="filterMatType('ANOTACAO',this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                Anotações
-              </button>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('modal-material')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Adicionar
+          <div class="canvas-toolbar-right">
+            <button class="canvas-btn-icon" id="canvas-toggle-sidebar" title="Referências PDF">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
             </button>
           </div>
         </div>
 
-        <!-- Área de conteúdo -->
-        <div id="mat-content">
-          <div class="mat-empty-hero">
-            <div class="mat-empty-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13,2 13,9 20,9"/></svg>
+        <!-- Workspace -->
+        <div class="canvas-workspace" id="canvas-workspace">
+          <!-- Empty state -->
+          <div class="canvas-empty-state" id="canvas-empty-state">
+            <div class="canvas-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
             </div>
-            <p class="mat-empty-title">Selecione uma disciplina</p>
-            <p class="mat-empty-sub">Escolha uma disciplina acima para visualizar e gerenciar seus materiais de estudo</p>
+            <p class="canvas-empty-title">Infinite Canvas Workspace</p>
+            <p class="canvas-empty-sub">Selecione uma disciplina para abrir seu quadro branco infinito. Anote, conecte ideias e arraste PDFs do painel lateral.</p>
+          </div>
+
+          <!-- Canvas ativo -->
+          <div id="canvas-workspace-inner" style="display:none;position:absolute;inset:0">
+            <div class="canvas-viewport" id="canvas-viewport">
+              <div class="canvas-world" id="canvas-world"></div>
+            </div>
+
+            <!-- Sidebar de Referências -->
+            <aside class="canvas-ref-sidebar" id="canvas-ref-sidebar">
+              <div class="canvas-ref-header">
+                <span class="canvas-ref-title">Referências</span>
+                <span class="canvas-ref-count" id="canvas-ref-count">0</span>
+              </div>
+              <div class="canvas-ref-list" id="canvas-ref-list"></div>
+            </aside>
+
+            <!-- Floating Dock -->
+            <div class="canvas-dock" id="canvas-dock">
+              <button class="canvas-dock-btn" data-tool="texto" title="Nó de Texto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Texto
+              </button>
+              <button class="canvas-dock-btn" data-tool="codigo" title="Nó de Código">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+                Código
+              </button>
+              <div class="canvas-dock-divider"></div>
+              <button class="canvas-dock-btn" data-tool="desenhar" title="Desenhar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+                Desenhar
+              </button>
+              <button class="canvas-dock-btn" data-tool="conectar" title="Conectar nós">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="3"/><circle cx="19" cy="5" r="3"/><circle cx="19" cy="19" r="3"/><line x1="7.5" y1="10.5" x2="16.5" y2="6.5"/><line x1="7.5" y1="13.5" x2="16.5" y2="17.5"/></svg>
+                Conectar
+              </button>
+            </div>
+
+            <!-- Crabit AI Copilot -->
+            <div class="canvas-copilot" id="canvas-copilot">
+              <div class="canvas-copilot-header">
+                <div class="canvas-copilot-avatar">
+                  <img src="crabit.png" alt="Crabit" onerror="this.parentElement.innerHTML='🦀'"/>
+                </div>
+                <div class="canvas-copilot-name">Crabit <span>Copilot</span></div>
+                <button class="canvas-copilot-toggle" title="Minimizar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 15l-6-6-6 6"/></svg>
+                </button>
+              </div>
+              <div class="canvas-copilot-body">
+                <p class="canvas-copilot-msg" id="canvas-copilot-msg">Olá! Comece a anotar e vou sugerir materiais relacionados.</p>
+                <div class="canvas-copilot-suggestions" id="canvas-copilot-suggestions"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -555,10 +586,8 @@
   </div><!-- /app -->
 </div><!-- /app-view -->
 
-<script src="script.js">
-
-  
-</script>
+<script src="script.js"></script>
+<script src="canvas/canvas.js"></script>
 
 </body>
 </html>

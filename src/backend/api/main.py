@@ -48,3 +48,16 @@ app.include_router(trilha_router)
 @app.get("/", tags=["Health"]) # rota para verificar se a API está funcionando corretamente, retornando um status "ok" e o nome da aplicação. Essa rota pode ser usada para monitoramento e testes de saúde da API.
 def health():
     return {"status": "ok", "app": "RuralBeat API"}
+
+
+# 
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "main:app", 
+        host="127.0.0.1", 
+        port=8000, 
+        reload=True,
+        # Ignora os arquivos do banco e a pasta database inteira
+        reload_excludes=["*.db", "*.db-journal", "database/*"] 
+    )

@@ -212,6 +212,7 @@ img { max-width: 100%; }
 /*  PAGE CONTENT  */
 .page { padding: 32px; flex: 1; display: none; }
 .page.active { display: block; }
+.page-canvas.active { display: flex !important; }
 .page-fade {
   animation: fadeUp .3s ease both;
 }

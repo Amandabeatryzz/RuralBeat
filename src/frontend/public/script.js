@@ -152,6 +152,7 @@ async function loadAll() {
   await loadProgresso();
   updateDashboard();
   populateDiscSelect();
+  populateCanvasDiscSelect?.();
 }
 
 /* Navegação */
@@ -182,6 +183,10 @@ function navigate(page) {
 
   if (page === 'perfil') renderPerfil();
   if (page === 'trilha' && !trilhaState.nos.length) loadTrilha();
+  if (page === 'materiais') {
+    populateCanvasDiscSelect?.();
+    loadCanvasWorkspace?.();
+  }
 }
 
 /* SIDEBAR MOBILE */
@@ -320,13 +325,22 @@ state.materiais        = [];
 state.materiaisFilter  = 'all';
 
 function populateDiscSelect() {
-  const sel = document.getElementById('mat-disc-select');
-  sel.innerHTML = '<option value="">Selecione uma disciplina...</option>' +
-    state.disciplinas.map(d => `<option value="${d.id}">${d.nome}</option>`).join('');
+  const sel = document.getElementById('canvas-disc-select');
+
+  if (!sel) {
+    console.error('canvas-disc-select não encontrado');
+    return;
+  }
+
+  sel.innerHTML =
+    '<option value="">Selecione uma disciplina...</option>' +
+    state.disciplinas.map(d =>
+      `<option value="${d.id}">${d.nome}</option>`
+    ).join('');
 }
 
 async function loadMateriais() {
-  const discId = document.getElementById('mat-disc-select').value;
+  const discId = document.getElementById('canvas-discc-select').value;
   const content = document.getElementById('mat-content');
   const searchWrap = document.getElementById('mat-search-wrap');
   const addBtnWrap = document.getElementById('mat-add-btn-wrap');
@@ -500,7 +514,7 @@ function selectMatTipo(tipo, btn) {
 }
 
 async function submitMaterial() {
-  const discId = document.getElementById('mat-disc-select').value;
+  const discId = document.getElementById('canvas-discc-select').value;
   if (!discId) return toast('Selecione uma disciplina primeiro', 'error');
   const tipo   = document.getElementById('mat-tipo').value;
   const titulo = document.getElementById('mat-titulo').value.trim();

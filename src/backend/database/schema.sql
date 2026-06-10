@@ -35,8 +35,46 @@ CREATE TABLE IF NOT EXISTS materiais (
     titulo TEXT NOT NULL,
     descricao TEXT,
     link TEXT NOT NULL,
+    tipo TEXT DEFAULT 'LINK' CHECK (tipo IN ('LINK','LIVRO','ANOTACAO','PDF')),
+    user_id INTEGER,
+    FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Infinite Canvas Workspace (Materiais)
+CREATE TABLE IF NOT EXISTS canvas_workspaces (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    disciplina_id INTEGER NOT NULL,
+    viewport_x REAL NOT NULL DEFAULT 0,
+    viewport_y REAL NOT NULL DEFAULT 0,
+    zoom REAL NOT NULL DEFAULT 1,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, disciplina_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS canvas_nodes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    workspace_id INTEGER NOT NULL,
+    tipo TEXT NOT NULL CHECK (tipo IN ('TEXTO','CODIGO','ARQUIVO')),
+    titulo TEXT,
+    conteudo TEXT,
+    pos_x REAL NOT NULL DEFAULT 0,
+    pos_y REAL NOT NULL DEFAULT 0,
+    largura REAL NOT NULL DEFAULT 280,
+    altura REAL NOT NULL DEFAULT 180,
+    material_id INTEGER,
+    meta_json TEXT,
+    z_index INTEGER NOT NULL DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (workspace_id) REFERENCES canvas_workspaces(id) ON DELETE CASCADE,
+    FOREIGN KEY (material_id) REFERENCES materiais(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_canvas_nodes_workspace ON canvas_nodes(workspace_id);
 
 CREATE TABLE IF NOT EXISTS eventos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
