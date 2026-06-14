@@ -1,117 +1,593 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>RuralBeat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="canvas/canvas.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet"/>
+<style>
 
-<link href="/src/frontend/src/assets/styles.css" rel="stylesheet">
+</style>
 </head>
-
 <body>
 
+<!-- TOAST CONTAINER -->
+<div id="toast-container" aria-live="polite"></div>
 
-<header class="navbar" role="banner">
 
-    <div class="logo">RuralBeat</div>
+<div class="modal-overlay" id="modal-projeto">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-proj-title">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-proj-title">Novo projeto</span>
+      <button class="modal-close btn btn-ghost btn-sm" onclick="closeModal('modal-projeto')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Título</label>
+        <input class="form-input" id="proj-titulo" placeholder="Nome do projeto"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição</label>
+        <textarea class="form-input" id="proj-desc" rows="3" placeholder="Descreva brevemente seu projeto"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Link do GitHub</label>
+        <input class="form-input" id="proj-github" placeholder="https://github.com/..."/>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="submitProjeto()">Publicar projeto</button>
+    </div>
+  </div>
+</div>
 
-    <nav class="nav-links" aria-label="Menu principal">
-        <a href="#">Início</a>
-        <a href="#">Cadeiras</a>
-        <a href="trilha.html">Trilha</a>
-        <a href="hackathon.html">Hackathons</a>
-        <a href="#">Ranking</a>
+<!-- MODAL: DETALHES DISCIPLINA -->
+<div class="modal-overlay" id="modal-disc">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-disc-title">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-disc-title">Disciplina</span>
+      <button class="modal-close btn btn-ghost btn-sm" onclick="closeModal('modal-disc')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-disc-body"></div>
+  </div>
+</div>
+
+<!-- MODAL: NOVO MATERIAL -->
+<div class="modal-overlay" id="modal-material">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-mat-title">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-mat-title">Adicionar material</span>
+      <button class="modal-close btn btn-ghost btn-sm" onclick="closeModal('modal-material')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Tipo de material -->
+      <div class="mat-modal-types" id="mat-modal-types">
+        <button class="mat-type-btn active" data-tipo="LINK" onclick="selectMatTipo('LINK',this)">
+          <div class="mat-type-icon mat-icon-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <span>Link</span>
+        </button>
+        <button class="mat-type-btn" data-tipo="LIVRO" onclick="selectMatTipo('LIVRO',this)">
+          <div class="mat-type-icon mat-icon-livro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <span>Livro</span>
+        </button>
+        <button class="mat-type-btn" data-tipo="ANOTACAO" onclick="selectMatTipo('ANOTACAO',this)">
+          <div class="mat-type-icon mat-icon-anot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <span>Anotação</span>
+        </button>
+      </div>
+      <input type="hidden" id="mat-tipo" value="LINK"/>
+      <div class="form-group">
+        <label class="form-label">Título <span style="color:var(--red)">*</span></label>
+        <input class="form-input" id="mat-titulo" placeholder="Ex: Aula 3 - Ponteiros em C"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição <span style="font-size:11px;color:var(--gray-400)">(opcional)</span></label>
+        <input class="form-input" id="mat-desc" placeholder="Breve descrição do conteúdo"/>
+      </div>
+      <!-- Link field - mostrado para LINK e LIVRO -->
+      <div class="form-group" id="mat-link-group">
+        <label class="form-label" id="mat-link-label">URL do recurso <span style="color:var(--red)">*</span></label>
+        <input class="form-input" id="mat-link" placeholder="https://..."/>
+      </div>
+      <!-- Conteúdo da anotação - só para ANOTACAO -->
+      <div class="form-group" id="mat-nota-group" style="display:none">
+        <label class="form-label">Anotação <span style="color:var(--red)">*</span></label>
+        <textarea class="form-input" id="mat-nota" rows="5" placeholder="Escreva sua anotação aqui..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="submitMaterial()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Salvar material
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: VER ANOTAÇÃO -->
+<div class="modal-overlay" id="modal-nota">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-nota-title">Anotação</span>
+      <button class="modal-close btn btn-ghost btn-sm" onclick="closeModal('modal-nota')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="nota-content" id="modal-nota-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ATUALIZAR STATUS DA DISCIPLINA (TRILHA) -->
+<div class="modal-overlay" id="modal-trilha-disc">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-trilha-title">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-trilha-title">Atualizar progresso</span>
+      <button class="modal-close btn btn-ghost btn-sm" onclick="closeModal('modal-trilha-disc')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-trilha-body"></div>
+  </div>
+</div>
+
+<!--  AUTH VIEW -->
+<div id="auth-view" style="display:none">
+  <div class="auth-wrapper">
+    <div class="auth-left">
+      <div class="auth-brand">
+
+        <span class="auth-brand-name">Rural<span>Beat</span></span>
+      </div>
+      <h1 class="auth-headline">Sua jornada acadêmica <span>organizada.</span></h1>
+      <p class="auth-sub">Acompanhe disciplinas, projetos, eventos e oportunidades em um só lugar.</p>
+      <img src="Crabit.png" alt="Crabit" onerror="this.style.display='none'"/>
+    </div>
+    <div class="auth-right">
+      <!-- LOGIN -->
+       
+      <div class="auth-form-box" id="form-login">
+        <h2 class="auth-form-title">Entrar</h2>
+        <p class="auth-form-sub">Bem-vindo de volta!</p>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input class="form-input" id="login-email" type="email" placeholder="seu@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <input class="form-input" id="login-senha" type="password" placeholder="••••••••"/>
+        </div>
+        <button class="btn btn-primary btn-full" id="btn-login" onclick="doLogin()">Entrar</button>
+        <p class="auth-switch">Não tem conta? <a onclick="toggleAuth('register')">Cadastrar-se</a></p>
+      </div>
+      <!-- REGISTER -->
+      <div class="auth-form-box" id="form-register" style="display:none">
+        <h2 class="auth-form-title">Criar conta</h2>
+        <p class="auth-form-sub">Comece sua jornada agora</p>
+        <div class="form-group">
+          <label class="form-label">Nome completo</label>
+          <input class="form-input" id="reg-nome" placeholder="Seu nome"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input class="form-input" id="reg-email" type="email" placeholder="seu@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <input class="form-input" id="reg-senha" type="password" placeholder="Mínimo 6 caracteres"/>
+        </div>
+        <button class="btn btn-primary btn-full" id="btn-register" onclick="doRegister()">Criar conta</button>
+        <p class="auth-switch">Já tem conta? <a onclick="toggleAuth('login')">Entrar</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--APP VIEW  -->
+<div id="app-view" style="display:none">
+  <div id="app">
+    <!-- SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <nav class="sidebar" id="sidebar" aria-label="Navegação principal">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo-text">Rural<span>Beat</span></span>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-section-label">Principal</div>
+        <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-section-label">Acadêmico</div>
+        <div class="nav-item" data-page="disciplinas" onclick="navigate('disciplinas')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Disciplinas
+        </div>
+        <div class="nav-item" data-page="materiais" onclick="navigate('materiais')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13,2 13,9 20,9"/></svg>
+          Materiais
+        </div>
+        <div class="nav-item" data-page="trilha" onclick="navigate('trilha')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><path d="M4.93 4.93l2.12 2.12m9.9 9.9 2.12 2.12M4.93 19.07l2.12-2.12m9.9-9.9 2.12-2.12"/></svg>
+          Trilha Acadêmica
+        </div>
+        <div class="nav-section-label">Comunidade</div>
+        <div class="nav-item" data-page="projetos" onclick="navigate('projetos')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+          Projetos
+        </div>
+        <div class="nav-item" data-page="eventos" onclick="navigate('eventos')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Eventos
+        </div>
+        <div class="nav-item" data-page="oportunidades" onclick="navigate('oportunidades')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Oportunidades
+        </div>
+        <div class="nav-section-label">Conta</div>
+        <div class="nav-item" data-page="perfil" onclick="navigate('perfil')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Perfil
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-card">
+          <div class="user-avatar" id="sidebar-avatar">?</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebar-name">Usuário</div>
+            <div class="user-role" id="sidebar-role">Estudante</div>
+          </div>
+          <button class="logout-btn btn" onclick="doLogout()" title="Sair">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
     </nav>
 
-    <div class="user" aria-label="Usuário logado">
-        <span>Olá, Arthur</span>
-    </div>
+    <!-- MAIN -->
+    <div class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <span class="topbar-title" id="topbar-title">Dashboard</span>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge-pill badge-orange" id="topbar-nivel">Nível 1</span>
+        </div>
+      </header>
 
-</header>
+      <!-- DASHBOARD -->
+      <section class="page active page-fade" id="page-dashboard">
+        <div class="hero-strip">
+          <div class="hero-text">
+            <div class="hero-greeting">Olá,</div>
+            <div class="hero-name" id="dash-name">Estudante</div>
+            <div class="hero-sub" id="dash-sub">Veja como está sua jornada hoje</div>
+          </div>
+          <div class="hero-crabit">
+            <img src="crabit.png" alt="Crabit" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="stats-grid" id="dash-stats">
+          <div class="stat-card">
+            <div class="stat-accent stat-accent-orange"></div>
+            <div class="stat-icon stat-icon-orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+            <div class="stat-value" id="stat-aprovadas">–</div>
+            <div class="stat-label">Disciplinas aprovadas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-accent stat-accent-blue"></div>
+            <div class="stat-icon stat-icon-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+            </div>
+            <div class="stat-value" id="stat-cursando">–</div>
+            <div class="stat-label">Cursando agora</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-accent stat-accent-green"></div>
+            <div class="stat-icon stat-icon-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+            </div>
+            <div class="stat-value" id="stat-projetos">–</div>
+            <div class="stat-label">Projetos publicados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-accent stat-accent-yellow"></div>
+            <div class="stat-icon stat-icon-yellow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="stat-value" id="stat-eventos">–</div>
+            <div class="stat-label">Eventos inscritos</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Progresso do curso</span>
+              <span class="badge-pill badge-orange" id="dash-pct-label">0%</span>
+            </div>
+            <div class="card-pad">
+              <div style="margin-bottom:8px">
+                <div class="progress-track"><div class="progress-fill" id="dash-progress-bar" style="width:0%"></div></div>
+              </div>
+              <p style="font-size:13px;color:var(--gray-400)" id="dash-progress-text">Carregando...</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Próximos eventos</span></div>
+            <div class="card-pad" id="dash-eventos-list">
+              <div class="empty-state"><p>Nenhum evento próximo</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-<main>
+      <!-- DISCIPLINAS -->
+      <section class="page page-fade" id="page-disciplinas">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Disciplinas</h1>
+            <p class="section-subtitle">Acompanhe seu progresso em cada matéria</p>
+          </div>
+        </div>
+        <div class="tabs" id="disc-tabs">
+          <button class="tab-btn active" onclick="filterDisc('all')">Todas</button>
+          <button class="tab-btn" onclick="filterDisc('obrigatorias')">Obrigatórias</button>
+          <button class="tab-btn" onclick="filterDisc('optativas')">Optativas</button>
+        </div>
+        <div class="periodo-pills" id="periodo-pills"></div>
+        <div class="disc-grid" id="disc-grid">
+          <div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray-400)">Carregando...</div>
+        </div>
+      </section>
 
-  
-    <section class="hero" aria-labelledby="titulo-principal">
-
-        <div class="hero-text">
-            <h1 id="titulo-principal">
-                Domine sua jornada com o <span>RuralBeat</span>
-            </h1>
-
-            <p>
-                Organize suas cadeiras, evolua na trilha e participe de hackathons reais.
-            </p>
-
-            <button class="btn btn-primary">Começar</button>
-            <button class="btn btn-outline">Ver trilha</button>
+      <!-- MATERIAIS — Infinite Canvas Workspace -->
+      <section class="page page-canvas page-fade" id="page-materiais">
+        <!-- Toolbar -->
+        <div class="canvas-toolbar">
+          <div class="canvas-toolbar-left">
+            <span class="canvas-toolbar-title">Materiais · <span id="canvas-disc-title">Workspace</span></span>
+            <div class="canvas-select-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <select class="canvas-disc-select" id="canvas-disc-select">
+                <option value="">Selecione uma disciplina...</option>
+              </select>
+            </div>
+            <span class="canvas-zoom-badge" id="canvas-zoom-badge">100%</span>
+          </div>
+          <div class="canvas-toolbar-right">
+            <button class="canvas-btn-icon" id="canvas-toggle-sidebar" title="Referências PDF">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+            </button>
+          </div>
         </div>
 
-        <img 
-           src="/src/frontend/src/assets/crabit.png" 
-            alt="Mascote Crabit do RuralBeat"
-            class="crabit"
-        >
+        <!-- Workspace -->
+        <div class="canvas-workspace" id="canvas-workspace">
+          <!-- Empty state -->
+          <div class="canvas-empty-state" id="canvas-empty-state">
+            <div class="canvas-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <p class="canvas-empty-title">Infinite Canvas Workspace</p>
+            <p class="canvas-empty-sub">Selecione uma disciplina para abrir seu quadro branco infinito. Anote, conecte ideias e arraste PDFs do painel lateral.</p>
+          </div>
 
-    </section>
+          <!-- Canvas ativo -->
+          <div id="canvas-workspace-inner" style="display:none;position:absolute;inset:0">
+            <div class="canvas-viewport" id="canvas-viewport">
+              <div class="canvas-world" id="canvas-world"></div>
+            </div>
 
-  
-    <section class="section" aria-labelledby="titulo-cadeiras">
+            <!-- Sidebar de Referências -->
+            <aside class="canvas-ref-sidebar" id="canvas-ref-sidebar">
+              <div class="canvas-ref-header">
+                <span class="canvas-ref-title">Referências</span>
+                <span class="canvas-ref-count" id="canvas-ref-count">0</span>
+              </div>
+              <div class="canvas-ref-list" id="canvas-ref-list"></div>
+            </aside>
 
-        <h2 id="titulo-cadeiras">Suas Cadeiras</h2>
+            <!-- Floating Dock -->
+            <div class="canvas-dock" id="canvas-dock">
+              <button class="canvas-dock-btn" data-tool="texto" title="Nó de Texto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Texto
+              </button>
+              <button class="canvas-dock-btn" data-tool="codigo" title="Nó de Código">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+                Código
+              </button>
+              <div class="canvas-dock-divider"></div>
+              <button class="canvas-dock-btn" data-tool="desenhar" title="Desenhar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+                Desenhar
+              </button>
+              <button class="canvas-dock-btn" data-tool="conectar" title="Conectar nós">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="3"/><circle cx="19" cy="5" r="3"/><circle cx="19" cy="19" r="3"/><line x1="7.5" y1="10.5" x2="16.5" y2="6.5"/><line x1="7.5" y1="13.5" x2="16.5" y2="17.5"/></svg>
+                Conectar
+              </button>
+            </div>
 
-      
-        <div class="loading" aria-live="polite">
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-        </div>
-
-    </section>
-
-
-    <section class="section" aria-labelledby="titulo-empty">
-
-        <div class="empty">
-            <img 
-                src="/src/frontend/src/assets/crabit.png" 
-                alt="Ilustração de estado vazio"
-            >
-
-            <h2 id="titulo-empty">Nenhuma cadeira ainda</h2>
-
-            <p>Comece criando sua primeira disciplina</p>
-
-            <button class="btn btn-primary">Criar cadeira</button>
-        </div>
-
-    </section>
-
-
-    <section class="section" aria-labelledby="titulo-hackathons">
-
-        <h2 id="titulo-hackathons">Hackathons Ativos</h2>
-
-        <div class="grid">
-
-            <article class="card" aria-labelledby="hackathon-1">
-
-                <h3 id="hackathon-1">RuralTech</h3>
-
-                <p>Tema: inovação no campo</p>
-
-                <button class="btn btn-primary">
-                    Participar
+            <!-- Crabit AI Copilot -->
+            <div class="canvas-copilot" id="canvas-copilot">
+              <div class="canvas-copilot-header">
+                <div class="canvas-copilot-avatar">
+                  <img src="crabit.png" alt="Crabit" onerror="this.parentElement.innerHTML='🦀'"/>
+                </div>
+                <div class="canvas-copilot-name">Crabit <span>Copilot</span></div>
+                <button class="canvas-copilot-toggle" title="Minimizar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 15l-6-6-6 6"/></svg>
                 </button>
+              </div>
+              <div class="canvas-copilot-body">
+                <p class="canvas-copilot-msg" id="canvas-copilot-msg">Olá! Comece a anotar e vou sugerir materiais relacionados.</p>
+                <div class="canvas-copilot-suggestions" id="canvas-copilot-suggestions"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            </article>
+      <!-- PROJETOS -->
+      <section class="page page-fade" id="page-projetos">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Projetos</h1>
+            <p class="section-subtitle">Produções da comunidade acadêmica</p>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-projeto')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo projeto
+          </button>
+        </div>
+        <div class="project-grid" id="project-grid">
+          <div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray-400)">Carregando...</div>
+        </div>
+      </section>
 
+      <!-- EVENTOS -->
+      <section class="page page-fade" id="page-eventos">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Eventos</h1>
+            <p class="section-subtitle">Eventos acadêmicos e hackathons</p>
+          </div>
+        </div>
+        <div class="tabs" id="evento-tabs">
+          <button class="tab-btn active" onclick="filterEventos('all')">Todos</button>
+          <button class="tab-btn" onclick="filterEventos('EVENTO')">Eventos</button>
+          <button class="tab-btn" onclick="filterEventos('HACKATHON')">Hackathons</button>
+          <button class="tab-btn" onclick="filterEventos('meus')">Minhas inscrições</button>
+        </div>
+        <div class="event-list" id="event-list">
+          <div style="padding:40px;text-align:center;color:var(--gray-400)">Carregando...</div>
+        </div>
+      </section>
+
+      <!-- OPORTUNIDADES -->
+      <section class="page page-fade" id="page-oportunidades">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Oportunidades</h1>
+            <p class="section-subtitle">Estágios, empregos e programas de desenvolvimento</p>
+          </div>
+        </div>
+        <div class="opp-list" id="opp-list">
+          <div style="padding:40px;text-align:center;color:var(--gray-400)">Carregando...</div>
+        </div>
+      </section>
+
+      <!-- PERFIL -->
+      <section class="page page-fade" id="page-perfil">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Meu perfil</h1>
+            <p class="section-subtitle">Gerencie suas informações</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px">
+          <div class="card card-pad">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--white)" id="perfil-avatar">?</div>
+              <div>
+                <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--blue)" id="perfil-nome-display">–</div>
+                <div style="font-size:13px;color:var(--gray-400)" id="perfil-email-display">–</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nome</label>
+              <input class="form-input" id="perfil-nome" placeholder="Seu nome"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">E-mail</label>
+              <input class="form-input" id="perfil-email" type="email" placeholder="seu@email.com"/>
+            </div>
+            <button class="btn btn-primary" onclick="updatePerfil()">Salvar alterações</button>
+          </div>
+          <div class="card card-pad">
+            <h3 class="card-title" style="margin-bottom:16px">Estatísticas</h3>
+            <div style="display:flex;flex-direction:column;gap:12px" id="perfil-stats"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRILHA ACADÊMICA -->
+      <section class="page page-fade" id="page-trilha">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Trilha Acadêmica</h1>
+            <p class="section-subtitle">Sua árvore de evolução — clique em um nó para atualizar o progresso</p>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400)"><span style="width:10px;height:10px;border-radius:50%;background:var(--green);display:inline-block"></span>Concluída</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400)"><span style="width:10px;height:10px;border-radius:50%;background:var(--blue-m);display:inline-block"></span>Em andamento</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400)"><span style="width:10px;height:10px;border-radius:50%;background:var(--yellow);display:inline-block"></span>Trancada</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400)"><span style="width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block"></span>Reprovada</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400)"><span style="width:10px;height:10px;border-radius:50%;background:var(--gray-200);display:inline-block"></span>Disponível</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400);opacity:.5"><span style="width:10px;height:10px;border-radius:50%;background:var(--gray-100);border:1px solid var(--gray-200);display:inline-block"></span>Bloqueada</span>
+          </div>
         </div>
 
-    </section>
+        <!-- Filtros de período -->
+        <div class="trilha-period-filter" id="trilha-period-filter">
+          <button class="periodo-pill active" onclick="trilhaFilterPeriodo(null,this)">Todos</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(1,this)">1º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(2,this)">2º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(3,this)">3º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(4,this)">4º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(5,this)">5º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(6,this)">6º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(7,this)">7º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(8,this)">8º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo(9,this)">9º</button>
+          <button class="periodo-pill" onclick="trilhaFilterPeriodo('opt',this)">Optativas</button>
+        </div>
 
-</main>
+        <!-- Canvas do grafo -->
+        <div class="trilha-canvas-wrap" id="trilha-canvas-wrap">
+          <svg id="trilha-edges" style="position:absolute;top:0;left:0;pointer-events:none;z-index:0;overflow:visible" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="var(--gray-300)"/>
+              </marker>
+              <marker id="arrowhead-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="var(--green)"/>
+              </marker>
+            </defs>
+          </svg>
+          <div id="trilha-graph" style="position:relative;z-index:1"></div>
+        </div>
 
+        <div id="trilha-loading" style="padding:60px;text-align:center;color:var(--gray-400);display:none">
+          <span class="spinner" style="border-color:var(--orange);border-top-color:transparent;margin-right:10px"></span>
+          Carregando trilha...
+        </div>
+      </section>
+
+    </div><!-- /main -->
+  </div><!-- /app -->
+</div><!-- /app-view -->
+
+<script src="script.js"></script>
+<script src="canvas/canvas.js"></script>
 
 </body>
 </html>

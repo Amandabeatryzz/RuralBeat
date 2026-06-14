@@ -1,35 +1,33 @@
+# Este script é responsável por inicializar o banco de dados SQLite para a aplicação RuralBeat. Ele cria as tabelas necessárias e define a estrutura do banco de dados com base no arquivo schema.sql. 
+# O script garante que o diretório para o banco de dados exista, conecta-se ao banco de dados, executa o script SQL para criar as tabelas e, em seguida, fecha a conexão. Se o schema já existir, ele ignora a criação e continua normalmente.
 import sqlite3
-import os # Importa o módulo os para lidar com caminhos de arquivos e diretórios
-from src.backend.config import DATABASE_PATH # Importa o caminho do banco de dados a partir do arquivo de configuração
+import os
+from config import settings
 
-def init_db(): # Função para inicializar o banco de dados, criando as tabelas necessárias a partir dos scripts SQL
-    conn = sqlite3.connect(DATABASE_PATH) # Conecta ao banco de dados usando o caminho definido em DATABASE_PATH
-    cursor = conn.cursor()
+def init_db():
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    DB_PATH  = os.path.join(BASE_DIR, "database", "ruralbeat.db")
+    SCHEMA   = os.path.join(BASE_DIR, "database", "schema.sql")
 
-    cursor.execute("PRAGMA foreign_keys = ON;")
-    
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) # Define o diretório base do projeto para localizar os scripts SQL
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
-    scripts = [
-        os.path.join(BASE_DIR, "database", "schema.sql"), # Caminho para o script de criação do esquema do banco de dados
-        os.path.join(BASE_DIR, "src/backend/database/migrations.sql"),
-    ]
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("PRAGMA foreign_keys = ON")
 
-    for path in scripts:
-      if os.path.exists(path):
+    if os.path.exists(SCHEMA):
+        with open(SCHEMA, "r", encoding="utf-8") as f:
+            sql = f.read()
         try:
-            with open(path, "r", encoding="utf-8") as f:
-                cursor.executescript(f.read())
-                print(f" Executado: {path}")
-        except Exception as e:
-            print(f" Erro ao executar {path}: {e}")
-      else:
-        print(f" Arquivo não encontrado: {path}")
+            conn.executescript(sql)
+            print(f"✅ Schema executado: {SCHEMA}")
+        except sqlite3.OperationalError as e:
+            print(f"⚠️  Schema já existente, ignorando: {e}")
+    else:
+        print(f"⚠️  Schema não encontrado: {SCHEMA}")
 
     conn.commit()
     conn.close()
-
-    print("\n Banco inicializado com sucesso!")
+    print("✅ Banco inicializado com sucesso!")
 
 if __name__ == "__main__":
     init_db()

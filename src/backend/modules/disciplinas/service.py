@@ -1,44 +1,34 @@
-from .repository import DisciplinaRepository
+import sqlite3
+from fastapi import HTTPException
 
-class DisciplinaService:
+from modules.disciplinas import repository
 
-    @staticmethod
-    def listar_disciplinas():
-        disciplinas = DisciplinaRepository.get_all()
+VALID_STATUS = {"CURSANDO", "APROVADO", "REPROVADO", "TRANCADO"}
 
-        return [
-            {
-                "id": d["id"],
-                "codigo": d["codigo"],
-                "nome": d["nome"],
-                "periodo": d["periodo"],
-                "carga_horaria": d["carga_horaria"]
-            }
-            for d in disciplinas
-        ]
 
-    @staticmethod
-    def listar_por_periodo(periodo):
-        disciplinas = DisciplinaRepository.get_by_periodo(periodo)
+def list_disciplinas(db: sqlite3.Connection, periodo=None, obrigatoria=None):
+    return repository.list_all(db, periodo, obrigatoria)
 
-        return [
-            {
-                "id": d["id"],
-                "codigo": d["codigo"],
-                "nome": d["nome"],
-                "periodo": d["periodo"],
-                "carga_horaria": d["carga_horaria"]
-            }
-            for d in disciplinas
-        ]
 
-    @staticmethod
-    def criar_disciplina(data):
-        disciplina_id = DisciplinaRepository.create(
-            data["codigo"],
-            data["nome"],
-            data["periodo"],
-            data["carga_horaria"]
-        )
+def get_disciplina(db: sqlite3.Connection, disciplina_id: int):
+    d = repository.find_by_id(db, disciplina_id)
+    if not d:
+        raise HTTPException(status_code=404, detail="Disciplina não encontrada")
+    return d
 
-        return {"id": disciplina_id}
+
+def get_progresso(db: sqlite3.Connection, user_id: int):
+    return repository.get_progresso(db, user_id)
+
+
+def set_progresso(db: sqlite3.Connection, user_id: int, disciplina_id: int, status: str):
+    if status not in VALID_STATUS:
+        raise HTTPException(status_code=422, detail=f"Status inválido. Use: {VALID_STATUS}")
+    if not repository.find_by_id(db, disciplina_id):
+        raise HTTPException(status_code=404, detail="Disciplina não encontrada")
+    return repository.upsert_progresso(db, user_id, disciplina_id, status)
+
+
+def remove_progresso(db: sqlite3.Connection, user_id: int, disciplina_id: int):
+    if not repository.delete_progresso(db, user_id, disciplina_id):
+        raise HTTPException(status_code=404, detail="Progresso não encontrado")
